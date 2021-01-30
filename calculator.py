@@ -6,6 +6,9 @@
 #
 # WARNING! All changes made in this file will be lost!
 
+import numbers
+from curses.ascii import isdigit
+
 from PyQt5 import QtCore, QtGui, QtWidgets,Qt
 from PyQt5.QtWidgets import (QApplication, QMainWindow)
 from PyQt5.QtGui import QKeyEvent
@@ -15,195 +18,228 @@ from PyQt5.QtGui import QKeyEvent
 # value2 = " "
 # convertValue = " "
 # result=0
+infix = []
+exp=[]
+postfix=[]
+value=[]
+stack=["("]
+
+
+class expressionEvalution:
+    def preference(self,op):
+        if op in ["(",")"]:
+            return 3
+        elif op in ["*","/"]:
+            return 2
+        else:
+            return 1
+    def checkOperator(self,op):
+        if op==")":
+            print("checkoperator_if")
+            print(stack)
+            preop=stack.pop()
+            print(preop)
+            while preop!="(":
+                print("first while")
+                postfix.append(preop)
+                preop=stack.pop()
+        else:
+            print("checkoperator_else")
+            pre1=self.preference(op)
+            val=stack.pop()
+            pre2=self.preference(val)
+            while pre2>=pre1:
+                # val=stack.pop()
+                if val=="(":
+                    print("while_if")
+                    stack.append(val)
+                    break;
+                else:
+                    print("while_else")
+                    postfix.append(val)
+                    pre2=self.preference(stack.pop())
+
+    def infixToPostfix(self):
+        infix.append(")")
+        print(infix)
+        for i in infix:
+            print("start------",i)
+            if i.isdigit():
+                postfix.append(i)
+            elif i=="(":
+                stack.append(i)
+            elif i == ")":
+                self.checkOperator(i)
+            elif i == "+":
+                self.checkOperator(i)
+                stack.append(i)
+                print(stack)
+            elif i == "-":
+                self.checkOperator(i)
+                stack.append(i)
+            elif i == "*":
+                self.checkOperator(i)
+                stack.append(i)
+            elif i == "/":
+                self.checkOperator(i)
+                stack.append(i)
+        print(postfix)
+        print("Ended")
+
+    def postfixEvalution(self):
+        print("Evalution started")
 
 class Ui_MainWindow(object):
 
     def __init__(self,a,b,c):
         self.sign=a
-        self.value2=b
-        self.result=c
 
-
-
+    def infixToPostfix(self):
+        infix.insert(0, "(")
+        print(infix)
+        for i in infix:
+            if isdigit(i):
+                postfix.append(i)
+            elif i == "(":
+                stack.append(i)
+            elif i == ")":
+                self.checkOperator(i)
+            elif i == "+":
+                self.checkOperator(i)
+                stack.append(i)
+            elif i == "-":
+                self.checkOperator(i)
+                stack.append(i)
+            elif i == "*":
+                self.checkOperator(i)
+                stack.append(i)
+            elif i == "/":
+                self.checkOperator(i)
+                stack.append(i)
+        print("Ended")
 
     def clearScreen(self):
-        self.line.setText(" ")
-        self.value2=" "
-        self.value=" "
-        self.result=0
-        self.sign=" "
+        value.clear()
+        exp.clear()
+        infix.clear()
+        self.line.setText(''.join(map(str, exp)))
+
     def eightClicked(self):
-        self.value=self.line.text()+"8"
-        self.value2=self.value2+"8"
-        self.line.setText(self.value)
+        exp.append("8")
+        print(exp)
+        self.line.setText(''.join(map(str,exp)))
+        value.append("8")
+        print(value)
+
     def nineClicked(self):
-        self.value=self.line.text()+"9"
-        self.value2 = self.value2 + "9"
-        self.line.setText(self.value)
+        exp.append("9")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("9")
+        print(value)
     def sevenClicked(self):
-        self.value=self.line.text()+"7"
-        self.value2 = self.value2 + "7"
-        self.line.setText(self.value)
+        exp.append("7")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("7")
+        print(value)
     def sixClicked(self):
-        self.value=self.line.text()+"6"
-        self.value2 = self.value2 + "6"
-        self.line.setText(self.value)
+        exp.append("6")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("6")
+        print(value)
     def fiveClicked(self):
-        self.value=self.line.text()+"5"
-        self.value2 = self.value2 + "5"
-        self.line.setText(self.value)
+        exp.append("5")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("5")
+        print(value)
     def fourClicked(self):
-        self.value=self.line.text()+"4"
-        self.value2 = self.value2 + "4"
-        self.line.setText(self.value)
+        exp.append("4")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("4")
+        print(value)
     def threeClicked(self):
-        self.value=self.line.text()+"3"
-        self.value2 = self.value2 + "3"
-        self.line.setText(self.value)
+        exp.append("3")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("3")
+        print(value)
     def twoClicked(self):
-        self.value=self.line.text()+"2"
-        self.value2 = self.value2 + "2"
-        self.line.setText(self.value)
+        exp.append("2")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("2")
+        print(value)
     def oneClicked(self):
-        self.value=self.line.text()+"1"
-        self.value2 = self.value2 + "1"
-        self.line.setText(self.value)
+        exp.append("1")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("1")
+        print(value)
     def zeroClicked(self):
-        self.value=self.line.text()+"0"
-        self.value2 = self.value2 + "0"
-        self.line.setText(self.value)
+        exp.append("0")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append("0")
+        print(value)
     def dotClicked(self):
-        self.value = self.line.text() + "."
-        self.value2 = self.value2 + "."
-        self.line.setText(self.value)
-    # def backClicked(self):
-        # self.value=self.line.text
-        # back = self.value
-        # back=back
-        # self.value=back
-        # self.line.setText(self.value)
+        exp.append(".")
+        print(exp)
+        self.line.setText(''.join(map(str, exp)))
+        value.append(".")
+        print(value)
+    def backClicked(self):
+        if isdigit(exp.pop()):
+            print(exp)
+            self.line.setText(''.join(map(str,exp)))
+            value.pop()
+        else:
+            value.clear()
+            infix.pop()
+            value.append(infix.pop())
+            self.line.setText(''.join(map(str, exp)))
 
     def addition(self):
-        if self.sign == "+":
-            self.result=self.result+float(self.value2)
-            self.value2=" "
-            self.sign = "+"
-        elif self.sign == "-":
-            self.result=(self.result)-float(self.value2)
-            self.value2=" "
-            self.sign = "+"
-        elif self.sign == "x":
-             self.result =(self.result) * float(self.value2)
-             self.value2 = " "
-             self.sign = "+"
-        elif self.sign == "/":
-            self.result = (self.result) / float(self.value2)
-            self.value2 = " "
-            self.sign = "+"
-        elif self.sign == " ":
-            self.result=float(self.line.text())
-            self.value2=" "
-            self.sign="+"
-        self.value=self.line.text()+"+"
-        self.line.setText(self.value)
+            exp.append("+")
+            infix.append(''.join(map(str, value)))
+            infix.append("+")
+            print(infix)
+            value.clear()
+            self.line.setText(''.join(map(str, exp)))
 
     def division(self):
-        if self.sign == "+":
-            self.result = self.result + float(self.value2)
-            self.value2 = " "
-            self.sign = "/"
-        elif self.sign == "-":
-            self.result = (self.result) - float(self.value2)
-            self.value2 = " "
-            self.sign = "/"
-        elif self.sign == "x":
-            self.result = (self.result) * float(self.value2)
-            self.value2 = " "
-            self.sign = "/"
-        elif self.sign == "/":
-            self.result = (self.result) / float(self.value2)
-            self.value2 = " "
-            self.sign = "/"
-        elif self.sign == " ":
-            self.result =float(self.line.text())
-            self.value2 = " "
-            self.sign = "/"
-        self.value = self.line.text() + "/"
-        self.line.setText(self.value)
+        exp.append("/")
+        infix.append(''.join(map(str, value)))
+        infix.append("/")
+        print(infix)
+        value.clear()
+        self.line.setText(''.join(map(str, exp)))
 
     def substraction(self):
-        if self.sign == "+":
-            self.result = self.result + float(self.value2)
-            self.value2 = " "
-            self.sign = "-"
-        elif self.sign == "-":
-            self.result = (self.result) - float(self.value2)
-            self.value2 = " "
-            self.sign = "-"
-        elif self.sign == "x":
-            self.result = (self.result) * float(self.value2)
-            self.value2 = " "
-            self.sign = "-"
-        elif self.sign == "/":
-            self.result = (self.result) / float(self.value2)
-            self.value2 = " "
-            self.sign = "-"
-        elif self.sign == " ":
-            self.result =float(self.line.text())
-            self.value2 = " "
-            self.sign = "-"
-        self.value = self.line.text() + "-"
-        self.line.setText(self.value)
+        exp.append("-")
+        infix.append(''.join(map(str, value)))
+        infix.append("-")
+        value.clear()
+        print(infix)
+        self.line.setText(''.join(map(str, exp)))
 
     def multiplication(self):
-        if self.sign == "+":
-            self.result = self.result + float(self.value2)
-            self.value2 = " "
-            self.sign = "x"
-        elif self.sign == "-":
-            self.result = (self.result) - float(self.value2)
-            self.value2 = " "
-            self.sign = "x"
-        elif self.sign == "x":
-            self.result = (self.result) * float(self.value2)
-            self.value2 = " "
-            self.sign = "x"
-        elif self.sign == "/":
-            self.result = (self.result) / float(self.value2)
-            self.value2 = " "
-            self.sign = "x"
-        elif self.sign == " ":
-            self.result = float(self.line.text())
-            self.value2 = " "
-            self.sign = "x"
-        self.value = self.line.text() + "*"
-        self.line.setText(self.value)
+        exp.append("*")
+        infix.append(''.join(map(str, value)))
+        infix.append("*")
+        print(infix)
+        value.clear()
+        self.line.setText(''.join(map(str, exp)))
+
 
     def resultvalue(self):
-        if self.sign == "+":
-            self.result = self.result + float(self.value2)
-            self.value2 = " "
-            self.value=" "
-        elif self.sign == "-":
-            self.result = float(self.result) - float(self.value2)
-            self.value2 = " "
-            self.value=" "
-        elif self.sign == "x":
-            self.result = float(self.result) * float(self.value2)
-            self.value2 = " "
-            self.value=" "
-        elif self.sign == "/":
-            self.result = float(self.result) / float(self.value2)
-            self.value2 = " "
-            self.value=" "
-        elif self.sign == " ":
-            self.result = self.value2
-            self.value2=" "
-            self.value=" "
-        self.line.setText(str(self.result))
-        self.sign=" "
-        self.result=0
-
+        infix.append(''.join(map(str, value)))
+        value.clear()
+        exp.clear()
+        expressionEvalution().infixToPostfix()
 
 
 
@@ -308,7 +344,7 @@ class Ui_MainWindow(object):
         self.back.setStyleSheet("color: rgb(250, 250, 250);")
         self.back.setObjectName("back")
 
-        # self.back.clicked.connect(self.backClicked)
+        self.back.clicked.connect(self.backClicked)
 
         self.divide = QtWidgets.QPushButton(self.centralwidget)
         self.divide.setGeometry(QtCore.QRect(250, 170, 71, 51))
