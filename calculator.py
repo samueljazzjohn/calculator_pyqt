@@ -7,242 +7,250 @@
 # WARNING! All changes made in this file will be lost!
 
 import numbers
-from curses.ascii import isdigit
+import math
 
-from PyQt5 import QtCore, QtGui, QtWidgets,Qt
+from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import (QApplication, QMainWindow)
 from PyQt5.QtGui import QKeyEvent
-
 
 # sign = " "
 # value2 = " "
 # convertValue = " "
 # result=0
 infix = []
-exp=[]
-postfix=[]
-value=[]
-stack=["("]
+exp = []
+postfix = []
+value = []
+stack = []
 
 
 class expressionEvalution:
-    def preference(self,op):
-        if op in ["(",")"]:
+
+    def check_float(self, potential_float):
+        try:
+            float(potential_float)
+            return True
+        except:
+            return False
+    def preference(self, op):
+        if op in ["(", ")"]:
             return 3
-        elif op in ["*","/"]:
+        elif op in ["*", "/"]:
             return 2
         else:
             return 1
-    def checkOperator(self,op):
-        if op==")":
-            print("checkoperator_if")
+
+    def checkOperator(self, op):
+        if op == ")":
             print(stack)
-            preop=stack.pop()
+            preop = stack.pop()
             print(preop)
-            while preop!="(":
-                print("first while")
+            while preop != "(":
                 postfix.append(preop)
-                preop=stack.pop()
+                preop = stack.pop()
         else:
             print("checkoperator_else")
-            pre1=self.preference(op)
-            val=stack.pop()
-            pre2=self.preference(val)
-            while pre2>=pre1:
-                # val=stack.pop()
-                if val=="(":
-                    print("while_if")
+            pre1 = self.preference(op)
+            print(stack)
+            val = stack.pop()
+            pre2 = self.preference(val)
+            while pre2 >= pre1:
+                if val == "(":
                     stack.append(val)
                     break;
                 else:
-                    print("while_else")
                     postfix.append(val)
-                    pre2=self.preference(stack.pop())
+                    val = stack.pop()
+                    pre2 = self.preference(val)
+            stack.append(val)
+    def postfixEvalution(self, post):
+        for i in post:
+            if self.check_float(i):
+                print("digit")
+                print(i)
+                stack.append(i)
+                print(stack)
+            else:
+                val1 = float(stack.pop())
+                val2 = float(stack.pop())
+                # stack.append((eval(compile(val2 + i + val1,'<strinh>','eval'))))
+                if i == "+":
+                    stack.append(val2+val1)
+                elif i == "-":
+                    stack.append(val2-val1)
+                elif i == "*":
+                    stack.append(val2*val1)
+                elif i == "/":
+                    stack.append(val2/val1)
+                print(stack)
+        return stack.pop()
 
     def infixToPostfix(self):
         infix.append(")")
-        print(infix)
+        stack.append("(")
         for i in infix:
-            print("start------",i)
-            if i.isdigit():
-                postfix.append(i)
-            elif i=="(":
+            if i == "(":
                 stack.append(i)
             elif i == ")":
                 self.checkOperator(i)
-            elif i == "+":
+            elif i in ["+", "-", "*", "/"]:
                 self.checkOperator(i)
                 stack.append(i)
-                print(stack)
-            elif i == "-":
-                self.checkOperator(i)
-                stack.append(i)
-            elif i == "*":
-                self.checkOperator(i)
-                stack.append(i)
-            elif i == "/":
-                self.checkOperator(i)
-                stack.append(i)
-        print(postfix)
-        print("Ended")
+            else:
+                postfix.append(i)
+        stack.clear()
+        self.result = self.postfixEvalution(postfix)
+        infix.clear()
+        postfix.clear()
+        stack.clear()
+        return self.result
 
-    def postfixEvalution(self):
-        print("Evalution started")
 
 class Ui_MainWindow(object):
 
-    def __init__(self,a,b,c):
-        self.sign=a
+    def __init__(self, a, b, c):
+        self.sign = a
 
-    def infixToPostfix(self):
-        infix.insert(0, "(")
-        print(infix)
-        for i in infix:
-            if isdigit(i):
-                postfix.append(i)
-            elif i == "(":
-                stack.append(i)
-            elif i == ")":
-                self.checkOperator(i)
-            elif i == "+":
-                self.checkOperator(i)
-                stack.append(i)
-            elif i == "-":
-                self.checkOperator(i)
-                stack.append(i)
-            elif i == "*":
-                self.checkOperator(i)
-                stack.append(i)
-            elif i == "/":
-                self.checkOperator(i)
-                stack.append(i)
-        print("Ended")
+
 
     def clearScreen(self):
         value.clear()
         exp.clear()
         infix.clear()
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
 
     def eightClicked(self):
         exp.append("8")
         print(exp)
-        self.line.setText(''.join(map(str,exp)))
+        self.line.setText(''.join(exp))
         value.append("8")
         print(value)
 
     def nineClicked(self):
         exp.append("9")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("9")
         print(value)
+
     def sevenClicked(self):
         exp.append("7")
         print(exp)
         self.line.setText(''.join(map(str, exp)))
         value.append("7")
         print(value)
+
     def sixClicked(self):
         exp.append("6")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("6")
         print(value)
+
     def fiveClicked(self):
         exp.append("5")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("5")
         print(value)
+
     def fourClicked(self):
         exp.append("4")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("4")
         print(value)
+
     def threeClicked(self):
         exp.append("3")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("3")
         print(value)
+
     def twoClicked(self):
         exp.append("2")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("2")
         print(value)
+
     def oneClicked(self):
         exp.append("1")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("1")
         print(value)
+
     def zeroClicked(self):
         exp.append("0")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append("0")
         print(value)
+
     def dotClicked(self):
         exp.append(".")
         print(exp)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
         value.append(".")
         print(value)
+
     def backClicked(self):
-        if isdigit(exp.pop()):
+        if exp.pop().isdigit():
             print(exp)
-            self.line.setText(''.join(map(str,exp)))
+            self.line.setText(''.join(exp))
             value.pop()
         else:
             value.clear()
             infix.pop()
             value.append(infix.pop())
-            self.line.setText(''.join(map(str, exp)))
+            self.line.setText(''.join(exp))
 
     def addition(self):
-            exp.append("+")
-            infix.append(''.join(map(str, value)))
-            infix.append("+")
-            print(infix)
-            value.clear()
-            self.line.setText(''.join(map(str, exp)))
+        exp.append("+")
+        print(value)
+        infix.append(float(''.join(value)))
+        infix.append("+")
+        print(infix)
+        value.clear()
+        self.line.setText(''.join(exp))
 
     def division(self):
         exp.append("/")
-        infix.append(''.join(map(str, value)))
+        infix.append(''.join(value))
         infix.append("/")
         print(infix)
         value.clear()
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
 
     def substraction(self):
         exp.append("-")
-        infix.append(''.join(map(str, value)))
+        infix.append(''.join(value))
         infix.append("-")
         value.clear()
         print(infix)
-        self.line.setText(''.join(map(str, exp)))
+        self.line.setText(''.join(exp))
 
     def multiplication(self):
         exp.append("*")
-        infix.append(''.join(map(str, value)))
+        infix.append(''.join(value))
         infix.append("*")
         print(infix)
         value.clear()
         self.line.setText(''.join(map(str, exp)))
 
-
     def resultvalue(self):
-        infix.append(''.join(map(str, value)))
+        print(exp)
+        infix.append(float(''.join(value)))
         value.clear()
         exp.clear()
-        expressionEvalution().infixToPostfix()
-
-
-
+        result = expressionEvalution().infixToPostfix()
+        if float(result).is_integer():
+            result=int(result)
+        self.line.setText(str(result))
+        exp.append(str(result))
+        value.append(str(result))
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -383,37 +391,34 @@ class Ui_MainWindow(object):
         self.equal.clicked.connect(self.resultvalue)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 410, 22))
-        self.menubar.setStyleSheet("background-color: rgb(70, 70, 70);")
-        self.menubar.setStyleSheet("color: rgb(250, 250, 250);")
-        self.menubar.setObjectName("menubar")
-        self.menuFILE = QtWidgets.QMenu(self.menubar)
-        self.menuFILE.setObjectName("menuFILE")
-        self.menuFILE.setStyleSheet("border-color: rgb(10, 10, 10);")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        self.actionNEW = QtWidgets.QAction(MainWindow)
-        self.actionNEW.setObjectName("actionNEW")
-        self.actionCLOSE = QtWidgets.QAction(MainWindow)
-        self.actionCLOSE.setObjectName("actionCLOSE")
-        self.menuFILE.addAction(self.actionNEW)
-        self.menuFILE.addAction(self.actionCLOSE)
-        self.menubar.addAction(self.menuFILE.menuAction())
+        # self.menubar = QtWidgets.QMenuBar(MainWindow)
+        # self.menubar.setGeometry(QtCore.QRect(0, 0, 410, 22))
+        # self.menubar.setStyleSheet("background-color: rgb(70, 70, 70);")
+        # self.menubar.setStyleSheet("color: rgb(250, 250, 250);")
+        # self.menubar.setObjectName("menubar")
+        # self.menuFILE = QtWidgets.QMenu(self.menubar)
+        # self.menuFILE.setObjectName("menuFILE")
+        # self.menuFILE.setStyleSheet("border-color: rgb(10, 10, 10);")
+        # MainWindow.setMenuBar(self.menubar)
+        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        # self.statusbar.setObjectName("statusbar")
+        # MainWindow.setStatusBar(self.statusbar)
+        # self.actionNEW = QtWidgets.QAction(MainWindow)
+        # self.actionNEW.setObjectName("actionNEW")
+        # self.actionCLOSE = QtWidgets.QAction(MainWindow)
+        # self.actionCLOSE.setObjectName("actionCLOSE")
+        # self.menuFILE.addAction(self.actionNEW)
+        # self.menuFILE.addAction(self.actionCLOSE)
+        # self.menubar.addAction(self.menuFILE.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.actionNEW.triggered.connect(self.line.clear)
-        self.actionCLOSE.triggered.connect(MainWindow.close)
+        # self.actionNEW.triggered.connect(self.line.clear)
+        # self.actionCLOSE.triggered.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Calculator"))
         self.seven.setText(_translate("MainWindow", "7"))
         self.eight.setText(_translate("MainWindow", "8"))
         self.nine.setText(_translate("MainWindow", "9"))
@@ -432,22 +437,24 @@ class Ui_MainWindow(object):
         self.mul.setText(_translate("MainWindow", "x"))
         self.add.setText(_translate("MainWindow", "+"))
         self.equal.setText(_translate("MainWindow", "="))
-        self.menuFILE.setTitle(_translate("MainWindow", "FILE"))
-        self.actionNEW.setText(_translate("MainWindow", "NEW"))
-        self.actionCLOSE.setText(_translate("MainWindow", "CLOSE"))
+        # self.menuFILE.setTitle(_translate("MainWindow", "FILE"))
+        # self.actionNEW.setText(_translate("MainWindow", "NEW"))
+        # self.actionCLOSE.setText(_translate("MainWindow", "CLOSE"))
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None,sign=" ",value2=" ",result=0):
-        QMainWindow.__init__(self, parent=parent,a=sign,b=value2,c=result)
+    def __init__(self, parent=None, sign=" ", value2=" ", result=0):
+        QMainWindow.__init__(self, parent=parent, a=sign, b=value2, c=result)
         self.setupUi(self)
 
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_Space:
             self.line.keyPressEvent(self.oneClicked)
 
+
 if __name__ == "__main__":
     import sys
+
     sign = " "
     value2 = " "
     convertValue = " "
@@ -456,4 +463,3 @@ if __name__ == "__main__":
     w = MainWindow()
     w.show()
     sys.exit(app.exec_())
-
