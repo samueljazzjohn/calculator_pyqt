@@ -13,14 +13,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from PyQt5.QtWidgets import (QApplication, QMainWindow)
 from PyQt5.QtGui import QKeyEvent
 
-# sign = " "
-# value2 = " "
-# convertValue = " "
-# result=0
+#infix is used to store the infix expression
 infix = []
+#exp is to store entire expression to display the screen
 exp = []
+#postfix is to store postfix expression
 postfix = []
+#value is to store the numbers between operators
 value = []
+#stack is used to hold operators and operands during postfix conversion and evaluation respectively
 stack = []
 
 
@@ -32,6 +33,7 @@ class expressionEvalution:
             return True
         except:
             return False
+
     def preference(self, op):
         if op in ["(", ")"]:
             return 3
@@ -42,16 +44,12 @@ class expressionEvalution:
 
     def checkOperator(self, op):
         if op == ")":
-            print(stack)
             preop = stack.pop()
-            print(preop)
             while preop != "(":
                 postfix.append(preop)
                 preop = stack.pop()
         else:
-            print("checkoperator_else")
             pre1 = self.preference(op)
-            print(stack)
             val = stack.pop()
             pre2 = self.preference(val)
             while pre2 >= pre1:
@@ -63,13 +61,11 @@ class expressionEvalution:
                     val = stack.pop()
                     pre2 = self.preference(val)
             stack.append(val)
+
     def postfixEvalution(self, post):
         for i in post:
             if self.check_float(i):
-                print("digit")
-                print(i)
                 stack.append(i)
-                print(stack)
             else:
                 val1 = float(stack.pop())
                 val2 = float(stack.pop())
@@ -82,7 +78,6 @@ class expressionEvalution:
                     stack.append(val2*val1)
                 elif i == "/":
                     stack.append(val2/val1)
-                print(stack)
         return stack.pop()
 
     def infixToPostfix(self):
@@ -111,7 +106,18 @@ class Ui_MainWindow(object):
     def __init__(self, a, b, c):
         self.sign = a
 
+    def clicked(self,val):
+        print(val)
+        exp.append(val)
+        self.line.setText(''.join(exp))
+        value.append(val)
 
+    def op_clicked(self,op):
+        exp.append(op)
+        infix.append(float(''.join(value)))
+        infix.append(op)
+        value.clear()
+        self.line.setText(''.join(exp))
 
     def clearScreen(self):
         value.clear()
@@ -119,86 +125,8 @@ class Ui_MainWindow(object):
         infix.clear()
         self.line.setText(''.join(exp))
 
-    def eightClicked(self):
-        exp.append("8")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("8")
-        print(value)
-
-    def nineClicked(self):
-        exp.append("9")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("9")
-        print(value)
-
-    def sevenClicked(self):
-        exp.append("7")
-        print(exp)
-        self.line.setText(''.join(map(str, exp)))
-        value.append("7")
-        print(value)
-
-    def sixClicked(self):
-        exp.append("6")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("6")
-        print(value)
-
-    def fiveClicked(self):
-        exp.append("5")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("5")
-        print(value)
-
-    def fourClicked(self):
-        exp.append("4")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("4")
-        print(value)
-
-    def threeClicked(self):
-        exp.append("3")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("3")
-        print(value)
-
-    def twoClicked(self):
-        exp.append("2")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("2")
-        print(value)
-
-    def oneClicked(self):
-        exp.append("1")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("1")
-        print(value)
-
-    def zeroClicked(self):
-        exp.append("0")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append("0")
-        print(value)
-
-    def dotClicked(self):
-        exp.append(".")
-        print(exp)
-        self.line.setText(''.join(exp))
-        value.append(".")
-        print(value)
-
     def backClicked(self):
         if exp.pop().isdigit():
-            print(exp)
             self.line.setText(''.join(exp))
             value.pop()
         else:
@@ -207,41 +135,8 @@ class Ui_MainWindow(object):
             value.append(infix.pop())
             self.line.setText(''.join(exp))
 
-    def addition(self):
-        exp.append("+")
-        print(value)
-        infix.append(float(''.join(value)))
-        infix.append("+")
-        print(infix)
-        value.clear()
-        self.line.setText(''.join(exp))
-
-    def division(self):
-        exp.append("/")
-        infix.append(''.join(value))
-        infix.append("/")
-        print(infix)
-        value.clear()
-        self.line.setText(''.join(exp))
-
-    def substraction(self):
-        exp.append("-")
-        infix.append(''.join(value))
-        infix.append("-")
-        value.clear()
-        print(infix)
-        self.line.setText(''.join(exp))
-
-    def multiplication(self):
-        exp.append("*")
-        infix.append(''.join(value))
-        infix.append("*")
-        print(infix)
-        value.clear()
-        self.line.setText(''.join(map(str, exp)))
 
     def resultvalue(self):
-        print(exp)
         infix.append(float(''.join(value)))
         value.clear()
         exp.clear()
@@ -254,102 +149,104 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(410, 396)
+        MainWindow.resize(410, 380)
         MainWindow.setStyleSheet("background-color: rgb(70, 70, 70);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.line = QtWidgets.QLineEdit(self.centralwidget)
-        self.line.setGeometry(QtCore.QRect(10, 20, 391, 61))
+        self.line.setGeometry(QtCore.QRect(10, 20, 390, 61))
         self.line.setStyleSheet("color: rgb(255, 255, 255);\n""font: 75 16pt \"Tlwg Typist\";")
         self.line.setReadOnly(True)
         self.line.setObjectName("line")
+
         self.seven = QtWidgets.QPushButton(self.centralwidget)
         self.seven.setGeometry(QtCore.QRect(10, 110, 71, 51))
-        self.seven.setStyleSheet("color: rgb(250, 250, 250);")
+        self.seven.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.seven.setObjectName("seven")
 
-        self.seven.clicked.connect(self.sevenClicked)
+        self.seven.clicked.connect(lambda :self.clicked("7"))
 
         self.eight = QtWidgets.QPushButton(self.centralwidget)
         self.eight.setGeometry(QtCore.QRect(90, 110, 71, 51))
-        self.eight.setStyleSheet("color: rgb(250, 250, 250);")
+        self.eight.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.eight.setObjectName("eight")
 
-        self.eight.clicked.connect(self.eightClicked)
+        self.eight.clicked.connect(lambda :self.clicked("8"))
 
         self.nine = QtWidgets.QPushButton(self.centralwidget)
         self.nine.setGeometry(QtCore.QRect(170, 110, 71, 51))
-        self.nine.setStyleSheet("color: rgb(250, 250, 250);")
+        self.nine.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.nine.setObjectName("nine")
 
-        self.nine.clicked.connect(self.nineClicked)
+        self.nine.clicked.connect(lambda :self.clicked("9"))
 
         self.four = QtWidgets.QPushButton(self.centralwidget)
         self.four.setGeometry(QtCore.QRect(10, 170, 71, 51))
-        self.four.setStyleSheet("color: rgb(250, 250, 250);")
+        self.four.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.four.setObjectName("four")
 
-        self.four.clicked.connect(self.fourClicked)
+        self.four.clicked.connect(lambda :self.clicked("4"))
 
         self.five = QtWidgets.QPushButton(self.centralwidget)
         self.five.setGeometry(QtCore.QRect(90, 170, 71, 51))
-        self.five.setStyleSheet("color: rgb(250, 250, 250);")
+        self.five.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.five.setObjectName("five")
 
-        self.five.clicked.connect(self.fiveClicked)
+        self.five.clicked.connect(lambda :self.clicked("5"))
 
         self.six = QtWidgets.QPushButton(self.centralwidget)
         self.six.setGeometry(QtCore.QRect(170, 170, 71, 51))
-        self.six.setStyleSheet("color: rgb(250, 250, 250);")
+        self.six.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.six.setObjectName("six")
 
-        self.six.clicked.connect(self.sixClicked)
+        self.six.clicked.connect(lambda :self.clicked("6"))
 
         self.one = QtWidgets.QPushButton(self.centralwidget)
         self.one.setGeometry(QtCore.QRect(10, 230, 71, 51))
-        self.one.setStyleSheet("color: rgb(250, 250, 250);")
+        self.one.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.one.setObjectName("one")
 
-        self.one.clicked.connect(self.oneClicked)
+        self.one.clicked.connect(lambda :self.clicked("1"))
 
         self.two = QtWidgets.QPushButton(self.centralwidget)
         self.two.setGeometry(QtCore.QRect(90, 230, 71, 51))
-        self.two.setStyleSheet("color: rgb(250, 250, 250);")
+        self.two.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.two.setObjectName("two")
 
-        self.two.clicked.connect(self.twoClicked)
+        self.two.clicked.connect(lambda :self.clicked("2"))
 
         self.three = QtWidgets.QPushButton(self.centralwidget)
         self.three.setGeometry(QtCore.QRect(170, 230, 71, 51))
-        self.three.setStyleSheet("color: rgb(250, 250, 250);")
+        self.three.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.three.setObjectName("three")
 
-        self.three.clicked.connect(self.threeClicked)
+        self.three.clicked.connect(lambda :self.clicked("3"))
 
         self.zero = QtWidgets.QPushButton(self.centralwidget)
         self.zero.setGeometry(QtCore.QRect(10, 290, 151, 51))
-        self.zero.setStyleSheet("color: rgb(250, 250, 250);")
+        self.zero.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.zero.setObjectName("zero")
 
-        self.zero.clicked.connect(self.zeroClicked)
+        self.zero.clicked.connect(lambda :self.clicked("0"))
 
         self.dot = QtWidgets.QPushButton(self.centralwidget)
         self.dot.setGeometry(QtCore.QRect(170, 290, 71, 51))
-        self.dot.setStyleSheet("color: rgb(250, 250, 250);")
+        self.dot.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.dot.setObjectName("dot")
 
-        self.dot.clicked.connect(self.dotClicked)
+        self.dot.clicked.connect(lambda :self.clicked("."))
 
         self.clear = QtWidgets.QPushButton(self.centralwidget)
         self.clear.setGeometry(QtCore.QRect(250, 110, 71, 51))
-        self.clear.setStyleSheet("color: rgb(250, 250, 250);")
+        self.clear.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.clear.setObjectName("clear")
 
         self.clear.clicked.connect(self.clearScreen)
 
         self.back = QtWidgets.QPushButton(self.centralwidget)
         self.back.setGeometry(QtCore.QRect(330, 110, 71, 51))
-        self.back.setStyleSheet("color: rgb(250, 250, 250);")
+        self.back.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.back.setObjectName("back")
 
         self.back.clicked.connect(self.backClicked)
@@ -357,35 +254,35 @@ class Ui_MainWindow(object):
         self.divide = QtWidgets.QPushButton(self.centralwidget)
         self.divide.setGeometry(QtCore.QRect(250, 170, 71, 51))
         self.divide.setGeometry(QtCore.QRect(250, 170, 71, 51))
-        self.divide.setStyleSheet("color: rgb(250, 250, 250);")
+        self.divide.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.divide.setObjectName("divide")
 
-        self.divide.clicked.connect(self.division)
+        self.divide.clicked.connect(lambda :self.op_clicked("/"))
 
         self.sub = QtWidgets.QPushButton(self.centralwidget)
         self.sub.setGeometry(QtCore.QRect(330, 170, 71, 51))
-        self.sub.setStyleSheet("color: rgb(250, 250, 250);")
+        self.sub.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.sub.setObjectName("sub")
 
-        self.sub.clicked.connect(self.substraction)
+        self.sub.clicked.connect(lambda :self.op_clicked("-"))
 
         self.mul = QtWidgets.QPushButton(self.centralwidget)
         self.mul.setGeometry(QtCore.QRect(250, 230, 71, 51))
-        self.mul.setStyleSheet("color: rgb(250, 250, 250);")
+        self.mul.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.mul.setObjectName("mul")
 
-        self.mul.clicked.connect(self.multiplication)
+        self.mul.clicked.connect(lambda :self.op_clicked("*"))
 
         self.add = QtWidgets.QPushButton(self.centralwidget)
         self.add.setGeometry(QtCore.QRect(330, 230, 71, 51))
-        self.add.setStyleSheet("color: rgb(250, 250, 250);")
+        self.add.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.add.setObjectName("add")
 
-        self.add.clicked.connect(self.addition)
+        self.add.clicked.connect(lambda :self.op_clicked("+"))
 
         self.equal = QtWidgets.QPushButton(self.centralwidget)
         self.equal.setGeometry(QtCore.QRect(250, 290, 151, 51))
-        self.equal.setStyleSheet("color: rgb(250, 250, 250);")
+        self.equal.setStyleSheet("color: rgb(250, 250, 250);outline:none;")
         self.equal.setObjectName("equal")
 
         self.equal.clicked.connect(self.resultvalue)
@@ -447,9 +344,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         QMainWindow.__init__(self, parent=parent, a=sign, b=value2, c=result)
         self.setupUi(self)
 
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Space:
-            self.line.keyPressEvent(self.oneClicked)
+    def keyPressEvent(self, event):
+        try :
+            if chr(event.key()).isdigit():
+                Ui_MainWindow.clicked(self,chr(event.key()))
+        except:
+            print("Not a digit")
+        else:
+            if chr(event.key()) in["+","-","*","/"]:
+                Ui_MainWindow.op_clicked(self,chr(event.key()))
+        finally:
+            if event.key() == QtCore.Qt.Key_Enter:
+                Ui_MainWindow.resultvalue(self)
+            elif event.key() == QtCore.Qt.Key_Back:
+                Ui_MainWindow.backClicked(self)
+            elif event.key() == QtCore.Qt.Key_Delete:
+                Ui_MainWindow.clearScreen(self)
+
 
 
 if __name__ == "__main__":
