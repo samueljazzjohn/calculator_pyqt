@@ -135,17 +135,17 @@ class Ui_MainWindow(object):
             value.append(infix.pop())
             self.line.setText(''.join(exp))
 
-
     def resultvalue(self):
-        infix.append(float(''.join(value)))
-        value.clear()
-        exp.clear()
-        result = expressionEvalution().infixToPostfix()
-        if float(result).is_integer():
-            result=int(result)
-        self.line.setText(str(result))
-        exp.append(str(result))
-        value.append(str(result))
+        if value:
+            infix.append(float(''.join(value)))
+            value.clear()
+            exp.clear()
+            result = expressionEvalution().infixToPostfix()
+            if float(result).is_integer():
+                result=int(result)
+            self.line.setText(str(result))
+            exp.append(str(result))
+            value.append(str(result))
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
