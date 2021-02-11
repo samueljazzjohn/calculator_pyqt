@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , icon='/home/jazzjohn/Programms/Python/Python_GUI_apps/Calculator/calculator.ico')
+          console=False , icon='calculator.ico')

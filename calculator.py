@@ -69,7 +69,6 @@ class expressionEvalution:
             else:
                 val1 = float(stack.pop())
                 val2 = float(stack.pop())
-                # stack.append((eval(compile(val2 + i + val1,'<strinh>','eval'))))
                 if i == "+":
                     stack.append(val2+val1)
                 elif i == "-":
@@ -107,7 +106,6 @@ class Ui_MainWindow(object):
         self.sign = a
 
     def clicked(self,val):
-        print(val)
         exp.append(val)
         self.line.setText(''.join(exp))
         value.append(val)
